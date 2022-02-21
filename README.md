@@ -6,17 +6,13 @@ Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
 
 ## Installation
 
-- [ ] `Developer TODO:` Update the below as needed to correctly describe the install procedure. For instance, if you do not have a PyPi repo, or if you want users to directly install from your git repo, you can modify this step as appropriate.
-
 ```bash
-pipx install tap-mercadopago
+pipx install git+https://github.com/a-rusi/tap-mercadopago.git
 ```
 
 ## Configuration
 
 ### Accepted Config Options
-
-- [ ] `Developer TODO:` Provide a list of config options accepted by the tap.
 
 A full list of supported settings and capabilities for this
 tap is available by running:
@@ -27,7 +23,8 @@ tap-mercadopago --about
 
 ### Source Authentication and Authorization
 
-- [ ] `Developer TODO:` If your tap requires special access on the source system, or any special authentication requirements, provide those here.
+The only config that's a strict requirement for this app is your Mercado Pago's `auth_token`.
+You can find more info about creating an application and getting your `auth_token` [here](https://www.mercadopago.com.ar/developers/es/guides/overview)
 
 ## Usage
 
@@ -43,28 +40,11 @@ tap-mercadopago --config CONFIG --discover > ./catalog.json
 
 ## Developer Resources
 
-- [ ] `Developer TODO:` As a first step, scan the entire project for the text "`TODO:`" and complete any recommended steps, deleting the "TODO" references once completed.
-
 ### Initialize your Development Environment
 
 ```bash
 pipx install poetry
 poetry install
-```
-
-### Create and Run Tests
-
-Create tests within the `tap_mercadopago/tests` subfolder and
-  then run:
-
-```bash
-poetry run pytest
-```
-
-You can also test the `tap-mercadopago` CLI interface directly using `poetry run`:
-
-```bash
-poetry run tap-mercadopago --help
 ```
 
 ### Testing with [Meltano](https://www.meltano.com)
