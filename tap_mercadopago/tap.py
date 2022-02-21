@@ -2,50 +2,46 @@
 
 from typing import List
 
-from singer_sdk import Tap, Stream
-from singer_sdk import typing as th  # JSON schema typing helpers
-# TODO: Import your custom stream types here:
-from tap_mercadopago.streams import (
-    MercadoPagoStream,
-    UsersStream,
-    GroupsStream,
-)
-# TODO: Compile a list of custom stream types here
-#       OR rewrite discover_streams() below with your custom logic.
-STREAM_TYPES = [
-    UsersStream,
-    GroupsStream,
-]
+from singer_sdk import Stream, Tap
+from singer_sdk import typing as th
+
+from tap_mercadopago.streams import PaymentsStream
+
+STREAM_TYPES = [PaymentsStream]
+DEFAULT_BASE_URL = "https://api.mercadopago.com/v1"
+DEFAULT_END_DATE = "NOW"
+DEFAULT_START_DATE = "NOW-1DAYS"
 
 
 class TapMercadoPago(Tap):
     """MercadoPago tap class."""
+
     name = "tap-mercadopago"
 
-    # TODO: Update this section with the actual config values you expect:
     config_jsonschema = th.PropertiesList(
         th.Property(
             "auth_token",
             th.StringType,
             required=True,
-            description="The token to authenticate against the API service"
-        ),
-        th.Property(
-            "project_ids",
-            th.ArrayType(th.StringType),
-            required=True,
-            description="Project IDs to replicate"
+            description="The token to authenticate against the API service",
         ),
         th.Property(
             "start_date",
             th.DateTimeType,
-            description="The earliest record date to sync"
+            default=DEFAULT_START_DATE,
+            description="The earliest record date to sync (default is yesterday)",
         ),
         th.Property(
-            "api_url",
+            "end_date",
+            th.DateTimeType,
+            default=DEFAULT_END_DATE,
+            description=f"The latest record date to sync (default = {DEFAULT_END_DATE})",
+        ),
+        th.Property(
+            "base_url",
             th.StringType,
-            default="https://api.mysample.com",
-            description="The url for the API service"
+            default=DEFAULT_BASE_URL,
+            description=f"URL of the Mercado Pago API (default = {DEFAULT_BASE_URL})",
         ),
     ).to_dict()
 
