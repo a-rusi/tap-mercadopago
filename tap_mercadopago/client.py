@@ -21,7 +21,7 @@ class MercadoPagoStream(RESTStream):
         return self.config["base_url"]
 
     records_jsonpath = "$.results[*]"
-    # next_page_token_jsonpath = "$.next_page"  # Or override `get_next_page_token`.
+    next_page_token_jsonpath = "$.paging[*]"
 
     @property
     def authenticator(self) -> BearerTokenAuthenticator:
@@ -43,30 +43,21 @@ class MercadoPagoStream(RESTStream):
         self, response: requests.Response, previous_token: Optional[Any]
     ) -> Optional[Any]:
         """Return a token for identifying next page or None if no more pages."""
-        # TODO: If pagination is required, return a token which can be used to get the
-        #       next page. If this is the final page, return "None" to end the
-        #       pagination loop.
+
         if self.next_page_token_jsonpath:
             all_matches = extract_jsonpath(
                 self.next_page_token_jsonpath, response.json()
             )
             first_match = next(iter(all_matches), None)
+
+            if first_match["offset"] >= first_match["total"]:
+                first_match = None
+
             next_page_token = first_match
-        else:
-            next_page_token = response.headers.get("X-Next-Page", None)
 
         return next_page_token
 
     def get_url_params(
-        self, context: Optional[dict], next_page_token: Optional[Any]
-    ) -> Dict[str, Any]:
-        """Return a dictionary of values to be used in URL parameterization."""
-        params: dict = {}
-        if next_page_token:
-            params["page"] = next_page_token
-        return params
-
-    def prepare_request_payload(
         self, context: Optional[dict], next_page_token: Optional[Any]
     ) -> Optional[dict]:
         """Prepare the data payload for the REST API request.
@@ -74,8 +65,9 @@ class MercadoPagoStream(RESTStream):
         By default, no payload will be sent (return None).
         """
         payload = {}
-        payload["status"] = "approved"
-        payload["offset"] = "0"
-        payload["limit"] = "10"
+        if next_page_token:
+            payload["offset"] = next_page_token["offset"] + next_page_token["limit"]
+        payload["begin_date"] = self.config.get("start_date")
+        payload["end_date"] = self.config.get("end_date")
 
         return payload
