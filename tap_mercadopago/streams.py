@@ -6,9 +6,6 @@ from singer_sdk import typing as th  # JSON Schema typing helpers
 
 from tap_mercadopago.client import MercadoPagoStream
 
-# TODO: Delete this is if not using json files for schema definition
-SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
-
 
 def _build_point_of_interaction_property():
     business_info = th.Property(
