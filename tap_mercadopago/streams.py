@@ -1,7 +1,6 @@
 """Stream type classes for tap-mercadopago."""
 
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Union
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
@@ -11,7 +10,7 @@ from tap_mercadopago.client import MercadoPagoStream
 SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
-def build_point_of_interaction_property():
+def _build_point_of_interaction_property():
     business_info = th.Property(
         "business_info",
         th.ObjectType(
@@ -24,7 +23,7 @@ def build_point_of_interaction_property():
     )
 
 
-def build_fee_details_property():
+def _build_fee_details_property():
     return th.Property(
         "fee_details",
         th.ArrayType(
@@ -37,7 +36,7 @@ def build_fee_details_property():
     )
 
 
-def build_transaction_details_property():
+def _build_transaction_details_property():
     return th.Property(
         "transaction_details",
         th.ObjectType(
@@ -63,9 +62,9 @@ class PaymentsStream(MercadoPagoStream):
     replication_key = "date_last_updated"
 
     schema = th.PropertiesList(
-        build_point_of_interaction_property(),
-        build_fee_details_property(),
-        build_transaction_details_property(),
+        _build_point_of_interaction_property(),
+        _build_fee_details_property(),
+        _build_transaction_details_property(),
         th.Property("corporation_id", th.StringType),
         th.Property("operation_type", th.StringType),
         th.Property("notification_url", th.StringType),

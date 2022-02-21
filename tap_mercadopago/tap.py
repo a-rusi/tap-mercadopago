@@ -35,7 +35,8 @@ class TapMercadoPago(Tap):
             "end_date",
             th.DateTimeType,
             default=DEFAULT_END_DATE,
-            description=f"The latest record date to sync (default = {DEFAULT_END_DATE})",
+            description=f"""The latest record date to sync (default
+            = {DEFAULT_END_DATE})""",
         ),
         th.Property(
             "base_url",
