@@ -1,7 +1,5 @@
 """Stream type classes for tap-mercadopago."""
 
-from pathlib import Path
-
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
 from tap_mercadopago.client import MercadoPagoStream
